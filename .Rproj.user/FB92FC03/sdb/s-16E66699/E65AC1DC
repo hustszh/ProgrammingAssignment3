@@ -1,0 +1,17 @@
+{
+    "contents" : "best <- function(state, outcome) {\n    ## Read outcome data\n    outcome <- read.csv(\"outcome-of-care-measures.csv\", colClasses=\"character\")\n    head(outcome)\n    ## Check that state and outcome are valid\n    state_name <- as.character(state)\n    if (is.na(state_name) | state_name == \"\") {\n        stop(\"invalid state\")\n    }\n    print(state_name)\n    head(outcome[,\"State\"])\n    if (!any(outcome[,\"State\"] == state_name)) {\n        stop(\"invalid state 2\")\n    }\n    \n    ## Return hospital name in that state with lowest 30-day death\n    \n    ## rate\n}",
+    "created" : 1419288407894.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1835201582",
+    "id" : "E65AC1DC",
+    "lastKnownWriteTime" : 1419289265,
+    "path" : "D:/devtool/git_workspace/ProgrammingAssignment3/best.R",
+    "project_path" : "best.R",
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "source_on_save" : false,
+    "type" : "r_source"
+}
