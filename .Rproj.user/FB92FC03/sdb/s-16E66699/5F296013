@@ -1,0 +1,17 @@
+{
+    "contents" : "rankhospital <- function(state, outcome, num = \"best\") {\n    ## Read outcome data，将\"Not Available\"转化为NA\n    data <- read.csv(\"outcome-of-care-measures.csv\", colClasses=\"character\",\n                     na.strings=\"Not Available\")\n    \n    ## Check that state and outcome are valid\n    valid_state <- unique(data[,\"State\"])\n    if ( is.na(state) | !state %in% valid_state ) {\n        stop(\"invalid state\")\n    }\n    \n    #构造outcome和对应列序号的数据框\n    valid_outcome_df <- data.frame(name=c(\"heart attack\", \"heart failure\", \"pneumonia\" ),\n                                   index=c(11,17,23),\n                                   stringsAsFactors=FALSE)\n    if ( is.na(outcome) | !outcome %in% valid_outcome_df[,1] ) {\n        stop(\"invalid outcome\")\n    }\n    \n    #check input num validation\n    if ( !num %in% c(\"best\",\"worst\" ) & !is.numeric( num ) ) {\n        stop(\"invalid num\")\n    }\n    \n    #获取输入outcome所对应的列序号\n    outcome_col_idx <- valid_outcome_df[valid_outcome_df$name==outcome,2]\n    \n    #获取输入state所对应的{hosptial(2),outcome}数据框，\n    #并过滤outcome列中值为NA的数据\n    valid_data <- data[data$State==state & !is.na(data[,outcome_col_idx]),\n                       c(2,outcome_col_idx)]\n    \n    #对数据进行排序\n    order_idx <- order(as.numeric(valid_data[,2]), valid_data[,1])\n    order_data <- valid_data[order_idx,]\n    rank_data <- cbind(order_data, c(1:nrow(order_data)))\n    names(rank_data) <- c(\"Hosptial.Name\",\"Rate\",\"Rank\")\n    \n    ## Return hospital name in that state with the given rank 30-day death rate\n    if ( num == \"best\" )\n        rank_data[1,1]\n    else if ( num == \"worst\")\n        rank_data[nrow(rank_data),1]\n    else if ( num <= nrow(rank_data) )\n        rank_data[num,1]\n    else\n        NA\n}",
+    "created" : 1419373111408.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "991759289",
+    "id" : "5F296013",
+    "lastKnownWriteTime" : 1419437436,
+    "path" : "D:/devtool/git_workspace/ProgrammingAssignment3/rankhospital.R",
+    "project_path" : "rankhospital.R",
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "source_on_save" : false,
+    "type" : "r_source"
+}
