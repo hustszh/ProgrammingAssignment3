@@ -1,0 +1,17 @@
+{
+    "contents" : "rankall <- function(outcome, num = \"best\") {\n    ## Read outcome data，将\"Not Available\"转化为NA\n    data <- read.csv(\"outcome-of-care-measures.csv\", colClasses=\"character\",\n                     na.strings=\"Not Available\")\n    \n    ## Check that outcome are valid\n    #构造outcome和对应列序号的数据框\n    valid_outcome_df <- data.frame(name=c(\"heart attack\", \"heart failure\", \"pneumonia\" ),\n                                   index=c(11,17,23),\n                                   stringsAsFactors=FALSE)\n    if ( is.na(outcome) | !outcome %in% valid_outcome_df[,1] ) {\n        stop(\"invalid outcome\")\n    }\n    \n    #check input num validation\n    if ( !num %in% c(\"best\",\"worst\" ) & !is.numeric( num ) ) {\n        stop(\"invalid num\")\n    }\n    \n    #获取输入outcome所对应的列序号\n    outcome_col_idx <- valid_outcome_df[valid_outcome_df$name==outcome,2]\n    \n    #获取输入outcome所对应的{hosptial(2),state(7),outcome}数据框，\n    #并过滤outcome列中值为NA的数据\n    valid_data <- data[!is.na(data[,outcome_col_idx]), c(2,7,outcome_col_idx)]\n    names(valid_data) <- c(\"hospital\", \"state\", \"rate\")\n    \n    ## For each state, find the hospital of the given rank\n    ## Return a data frame with the hospital names and the\n    ## (abbreviated) state name\n    #按照州对数据进行分割\n    split_data <- split(valid_data, valid_data[,2])\n    \n    #对split_data中的每一个子列表，进行排序（先outcome，再hospital）\n    order_idx <- lapply(split_data, function(x) order(as.numeric(x[,3]), x[,1]))\n    \n    order_data <- list()\n    for ( i in 1:length(split_data) ) {\n        order_data <- c(order_data, list(split_data[[i]][order_idx[[i]],]))\n    }\n    \n    sapply(order_data, function(x, num) {\n        if (nrow(x[[1]]) < num)\n            c(NA, x[[1]]$state)\n        else\n            c(x[[1]]$hospital, x[[1]]$state)\n    }, num )\n    output_data <- data.frame()\n    \n    \n    \n    \n    \n    \n    \n}",
+    "created" : 1419459283360.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "772908416",
+    "id" : "3C79BF2B",
+    "lastKnownWriteTime" : 1419548737,
+    "path" : "D:/devtool/git_workspace/ProgrammingAssignment3/rankall.R",
+    "project_path" : "rankall.R",
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "source_on_save" : false,
+    "type" : "r_source"
+}
