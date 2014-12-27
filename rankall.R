@@ -39,18 +39,27 @@ rankall <- function(outcome, num = "best") {
         order_data <- c(order_data, list(split_data[[i]][order_idx[[i]],]))
     }
     
-    sapply(order_data, function(x, num) {
-        if (nrow(x[[1]]) < num)
-            c(NA, x[[1]]$state)
-        else
-            c(x[[1]]$hospital, x[[1]]$state)
+    output_data <- sapply(order_data, function(x, num) {
+        df <- as.data.frame(x)
+        row_num <- nrow(df)
+        
+        if ( num == "best" ) {
+            c(df[1,1], df[1,2])
+        }
+        else if ( num == "worst" ) {
+            c(df[row_num,1],df[row_num,2])
+        }
+        else {
+            if ( row_num < num )
+                c(NA, df[1,2])
+            else
+                c(df[num,1],df[num,2])
+        }
     }, num )
-    output_data <- data.frame()
     
+    result_data <- as.data.frame(t(output_data))
+    names(result_data) <- c("hospital","state")
+    row.names(result_data) <- result_data$state
     
-    
-    
-    
-    
-    
+    result_data
 }
